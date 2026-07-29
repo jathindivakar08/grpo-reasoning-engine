@@ -1,0 +1,20 @@
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Python Caches
+__pycache__/
+*.pyc
+
+# Model Checkpoints & Weights
+checkpoints/
+grpo_qwen_lora/
+*.safetensors
+*.bin
+*.pt
+
+# System / OS
+.DS_Store
+.idea/
+.vscode/
