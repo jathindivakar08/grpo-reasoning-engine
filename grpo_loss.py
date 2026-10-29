@@ -48,6 +48,12 @@ def compute_grpo_loss(
         2. Clipped Surrogate: min(r_{i,t} * A_i, clip(r_{i,t}, 1-eps, 1+eps) * A_i)
         3. Unbiased KL Penalty: D_KL = exp(log \pi_{ref} - log \pi_\theta) - (log \pi_{ref} - log \pi_\theta) - 1
     """
+    # Ignore padding before subtraction/exp: masking inf afterwards yields NaNs.
+    active = completion_mask != 0
+    policy_log_ps = torch.where(active, policy_log_ps, 0.0)
+    old_policy_log_ps = torch.where(active, old_policy_log_ps, 0.0)
+    ref_log_ps = torch.where(active, ref_log_ps, 0.0)
+
     # 1. Expand advantages to match completion sequence length (G, 1) -> (G, seq_len)
     advantages_expanded = advantages.unsqueeze(-1).expand_as(policy_log_ps)
 
